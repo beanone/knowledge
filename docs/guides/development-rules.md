@@ -1,7 +1,7 @@
 ---
 description: Guides to the feature implementation and refactoring process
-globs: 
-alwaysApply: false
+globs:
+alwaysApply: true
 ---
 ---
 description: Guides to the feature implementation and refactoring process
@@ -27,7 +27,7 @@ This document serves as the authoritative guide for development practices in the
 ### How to Use This Document
 
 1. **Task Planning and Validation**:
-   - Before starting any task, review `docs/tasks.md` to understand:
+   - Before starting any task, review `docs/plan/tasks.md` to understand:
      - Task dependencies and prerequisites
      - Sub-tasks and their sequence
      - Acceptance criteria
@@ -36,43 +36,50 @@ This document serves as the authoritative guide for development practices in the
    - If you identify any discrepancies or needed adjustments to sub-tasks, acceptance criteria, or validation scripts, raise these concerns bportant**: Do not modify planned tasks or validation criteria without explicit approval
 
 2. **Implementation Process**:
-   - Follow the [Task Implementation Process](mdc:#34-task-implementation-process) section
+   - Follow the [Task Implementation Process](#34-task-implementation-process) section
    - Use the validation scripts as your primary guide for requirements
-   - Ensure compliance with all uments forode o
-      -    -s
+   - Ensure compliance with all relevant sections of this document:
+     - Architecture rules for your component
+     - Code organization standards
+     - Testing requirements
+     - Performance targets
+     - Security considerations
 
-- Usemples the remenerforize tRefaclloctorinent-
-   compd othnt ges aional Th to mqualidouules Conteturstem-[1.1 Graph Core Principles](mdc:#11-graph-core-principles)
-  - [1.2 Service Layer Rules](mdc:#12-service-layer-rules)
-  - [1.3 API Design Rules](mdc:#13-api-design-rules)
-- [2. Code Organization Rules](mdc:#2-code-organization-rules)
-  - [2.1 Package Structure](mdc:#21-package-structure)
-  - [2.2 Naming Conventions](mdc:#22-naming-conventions)
-- [3. Development Process Rules](mdc:#3-development-process-rules)
-  - [3.1 Git Workflow](mdc:#31-git-workflow)
-  - [3.2 Testing Requirements](mdc:#32-testing-requirements)
-  - [3.3 Documentation Requirements](mdc:#33-documentation-requirements)
-  - [3.4 Task Implementation Process](mdc:#34-task-implementation-process)
-  - [3.5 Component Refactoring Process](mdc:#35-component-refactoring-process)
-  - [3.6 Implementation and Refactoring Best Practices](mdc:#36-implementation-and-refactoring-best-practices)
-  - [3.7 Common Pitfalls to Avoid](mdc:#37-common-pitfalls-to-avoid)
-- [4. Performance Rules](mdc:#4-performance-rules)
-  - [4.1 Graph Operations](mdc:#41-graph-operations)
-  - [4.2 API Performance](mdc:#42-api-performance)
-- [5. Security Rules](mdc:#5-security-rules)
-  - [5.1 Authentication & Authorization](mdc:#51-authentication--authorization)
-  - [5.2 Data Security](mdc:#52-data-security)
-- [6. Monitoring Rules](mdc:#6-monitoring-rules)
-  - [6.1 Logging](mdc:#61-logging)
-  - [6.2 Metrics](mdc:#62-metrics)
-- [7. Dependency Management](mdc:#7-dependency-management)
-  - [7.1 Multi-Package Strategy](mdc:#71-multi-package-strategy)
-  - [7.2 Inter-Package Dependencies](mdc:#72-inter-package-dependencies)
-- [8. LLM Integration Rules](mdc:#8-llm-integration-rules)
-  - [8.1 GraphBuilder Integration](mdc:#81-graphbuilder-integration)
-  - [8.2 MCP Tool Definitions](mdc:#82-mcp-tool-definitions)
-- [9. Error Handling](mdc:#9-error-handling)
-  - [9.1 Exception Hierarchy](mdc:#91-exception-hierarchy)
+## Table of Contents
+- [1. System Architecture Rules](#1-system-architecture-rules)
+  - [1.1 Graph Core Principles](#11-graph-core-principles)
+  - [1.2 Service Layer Rules](#12-service-layer-rules)
+  - [1.3 API Design Rules](#13-api-design-rules)
+- [2. Code Organization Rules](#2-code-organization-rules)
+  - [2.1 Package Structure](#21-package-structure)
+  - [2.2 Naming Conventions](#22-naming-conventions)
+- [3. Development Process Rules](#3-development-process-rules)
+  - [3.1 Git Workflow](#31-git-workflow)
+  - [3.2 Testing Requirements](#32-testing-requirements)
+  - [3.3 Documentation Requirements](#33-documentation-requirements)
+  - [3.4 Task Implementation Process](#34-task-implementation-process)
+  - [3.5 Component Refactoring Process](#35-component-refactoring-process)
+  - [3.6 Implementation and Refactoring Best Practices](#36-implementation-and-refactoring-best-practices)
+  - [3.7 Common Pitfalls to Avoid](#37-common-pitfalls-to-avoid)
+- [4. Performance Rules](#4-performance-rules)
+  - [4.1 Graph Operations](#41-graph-operations)
+  - [4.2 API Performance](#42-api-performance)
+- [5. Security Rules](#5-security-rules)
+  - [5.1 Authentication & Authorization](#51-authentication--authorization)
+  - [5.2 Data Security](#52-data-security)
+- [6. Monitoring Rules](#6-monitoring-rules)
+  - [6.1 Logging](#61-logging)
+  - [6.2 Metrics](#62-metrics)
+- [7. Dependency Management](#7-dependency-management)
+  - [7.1 Multi-Package Strategy](#71-multi-package-strategy)
+  - [7.2 Inter-Package Dependencies](#72-inter-package-dependencies)
+- [8. LLM Integration Rules](#8-llm-integration-rules)
+  - [8.1 GraphBuilder Integration](#81-graphbuilder-integration)
+  - [8.2 MCP Tool Definitions](#82-mcp-tool-definitions)
+- [9. Error Handling](#9-error-handling)
+  - [9.1 Exception Hierarchy](#91-exception-hierarchy)
+  - [9.2 Error Handling Strategies](#92-error-handling-strategies)
+  - [9.3 Error Recovery](#93-error-recovery)
 
 ## 1. System Architecture Rules
 
@@ -240,8 +247,8 @@ chmod +x tools/dev-scripts/task13_validation.sh
 
 #### 3.4.2 Implementation Steps
 
-1. **Review Requirements** (see [Documentation Requirements](mdc:#33-documentation-requirements))
-   - Read the task description in `docs/tasks.md`
+1. **Review Requirements** (see [Documentation Requirements](#33-documentation-requirements))
+   - Read the task description in `docs/plan/tasks.md`
    - Review architecture documents in `docs/architecture/`
    - Understand validation requirements from `tools/dev-scripts/taskXX_validation.sh`
    - Check dependencies on other tasks
@@ -250,7 +257,7 @@ chmod +x tools/dev-scripts/task13_validation.sh
    - Break down the task into smaller components
    - ed packages and modules
    - List required changes and additions
-   - Consider test coverage requirements (see [Testing Requirements](mdc:#32-testing-requirements))
+   - Consider test coverage requirements (see [Testing Requirements](#32-testing-requirements))
 
 3. **Iterative Development**
    ```bash
@@ -295,7 +302,7 @@ chmod +x tools/dev-scripts/task13_validation.sh
 
 #### 3.5.1 Pre-Refactoring Analysis
 
-1. **Impact Assessment** (see [Testing Requirements](mdc:#32-testing-requirements))
+1. **Impact Assessment** (see [Testing Requirements](#32-testing-requirements))
    - Identify all dependent components
    - Review test coverage of affected code
    - Check for cross-package dependencies
@@ -318,7 +325,7 @@ chmod +x tools/dev-scripts/task13_validation.sh
    done
    ```
 
-2. **Iterative Refactoring** (see [Best Practices](mdc:#36-implementation-and-refactoring-best-practices))
+2. **Iterative Refactoring** (see [Best Practices](#36-implementation-and-refactoring-best-practices))
    - Make small, focused changes
    - Run tests after each change
    - Maintain backward compatibility
@@ -357,13 +364,13 @@ chmod +x tools/dev-scripts/task13_validation.sh
    poetry run pytest --cov=src --cov-report=term-missing
    ```
 
-2. **Documentation Updates** (see [Documentation Requirements](mdc:#33-documentation-requirements))
+2. **Documentation Updates** (see [Documentation Requirements](#33-documentation-requirements))
    - Update API documentation
    - Revise architecture diagrams if needed
    - Update package dependencies
    - Document breaking changes
 
-3. **Performance Verification** (see [Performance Rules](mdc:#4-performance-rules))
+3. **Performance Verification** (see [Performance Rules](#4-performance-rules))
    - Run benchmarks before/after
    - Check memory usage
    - Verify response times
@@ -381,11 +388,11 @@ If the refactoring affects other developers:
    - Create migration documentation in `docs/migrations/`
 
 2. **Support**
-   - Create migration scripts if needed (see [Error Handling](mdc:#9-error-handling))
+   - Create migration scripts if needed (see [Error Handling](#9-error-handling))
    - Update CI/CD pipelines
-   - Provide testing guidelines (see [Testing Requirements](mdc:#32-testing-requirements))
+   - Provide testing guidelines (see [Testing Requirements](#32-testing-requirements))
    - Document rollback procedures
-   - Set up monitoring for migration issues (see [Monitoring Rules](mdc:#6-monitoring-rules))
+   - Set up monitoring for migration issues (see [Monitoring Rules](#6-monitoring-rules))
 
 3. **Timeline**
    - Establish clear migration deadlines
@@ -403,7 +410,7 @@ If the refactoring affects other developers:
 
 #### 3.6.1 Implementation Best Practices
 1. **Incremental Progress**
-   - Commit frequently with clear messages (see [Git Workflow](mdc:#31-git-workflow))
+   - Commit frequently with clear messages (see [Git Workflow](#31-git-workflow))
    - Keep changes focused and reviewable
    - Run validation scripts often
    - Document as you go
@@ -648,6 +655,118 @@ Note: Current implementation focuses on single-user scenarios. Authentication an
           self.resource_id = resource_id
           super().__init__(message, context)
   ```
+
+### 9.2 Error Handling Strategies
+- **Validation Errors**:
+  - Validate input data before processing
+  - Return detailed validation errors
+  - Log validation failures
+  - Example:
+    ```python
+    async def create_entity(data: Dict[str, Any]) -> Entity:
+        try:
+            entity = Entity.validate(data)
+        except ValidationError as e:
+            logger.warning("Entity validation failed", extra={
+                "errors": e.validation_errors,
+                "data": data
+            })
+            raise
+        return await store_entity(entity)
+    ```
+
+- **Backend Errors**:
+  - Implement retry mechanisms
+  - Use circuit breakers for external services
+  - Log backend failures
+  - Example:
+    ```python
+    async def query_backend(query: Query) -> Result:
+        async with CircuitBreaker(failure_threshold=3):
+            try:
+                return await execute_query(query)
+            except BackendError as e:
+                logger.error("Backend query failed", extra={
+                    "operation": e.operation,
+                    "status_code": e.status_code,
+                    "query": query.dict()
+                })
+                raise
+    ```
+
+- **Transaction Errors**:
+  - Implement proper rollback mechanisms
+  - Log transaction failures
+  - Maintain transaction state
+  - Example:
+    ```python
+    async def execute_transaction(tx: Transaction) -> Result:
+        try:
+            result = await process_transaction(tx)
+            await commit_transaction(tx)
+            return result
+        except TransactionError as e:
+            logger.error("Transaction failed", extra={
+                "transaction_id": e.transaction_id,
+                "state": tx.state
+            })
+            await rollback_transaction(tx)
+            raise
+    ```
+
+### 9.3 Error Recovery
+- **Automatic Recovery**:
+  - Implement retry mechanisms with exponential backoff
+  - Maintain operation logs for rollback
+  - Use circuit breakers for failing services
+  - Example:
+    ```python
+    async def retry_with_backoff(operation: Callable, max_retries: int = 3) -> Any:
+        for attempt in range(max_retries):
+            try:
+                return await operation()
+            except RecoverableError as e:
+                if attempt == max_retries - 1:
+                    raise
+                wait_time = 2 ** attempt
+                logger.warning(f"Operation failed, retrying in {wait_time}s", extra={
+                    "attempt": attempt + 1,
+                    "max_retries": max_retries,
+                    "error": str(e)
+                })
+                await asyncio.sleep(wait_time)
+    ```
+
+- **Manual Recovery**:
+  - Document recovery procedures
+  - Provide diagnostic tools
+  - Include error codes and solutions
+  - Example:
+    ```python
+    class RecoveryTool:
+        async def diagnose_error(self, error_code: str) -> Dict[str, Any]:
+            """Get diagnostic information for an error."""
+            return {
+                "error_code": error_code,
+                "description": ERROR_DESCRIPTIONS[error_code],
+                "possible_causes": ERROR_CAUSES[error_code],
+                "recovery_steps": RECOVERY_STEPS[error_code]
+            }
+
+        async def attempt_recovery(self, error_code: str) -> bool:
+            """Attempt to recover from a known error."""
+            recovery_plan = RECOVERY_PLANS[error_code]
+            try:
+                await self.execute_recovery_plan(recovery_plan)
+                return True
+            except Exception as e:
+                logger.error("Recovery failed", extra={
+                    "error_code": error_code,
+                    "recovery_plan": recovery_plan,
+                    "error": str(e)
+                })
+                return False
+    ```
 
 ## Examples
 
