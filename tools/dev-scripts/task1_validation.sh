@@ -53,8 +53,13 @@ function validate_dev_tools() {
 }
 
 # Run all validations
+echo "Validating directory structure..."
 validate_structure
+
+echo "Validating package configurations..."
 validate_package_configs
+
+echo "Validating development tools..."
 validate_dev_tools
 
 echo "✅ Project structure and environment setup validated"

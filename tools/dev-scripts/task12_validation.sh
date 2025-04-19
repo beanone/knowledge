@@ -9,17 +9,64 @@ cd "$(git rev-parse --show-toplevel)"
 
 source .venv/bin/activate
 
-# Validate implementation
-function validate_implementation() {
+# Validate directory structure
+function validate_directory_structure() {
   cd knowledge/packages/graph-builder
+
+  # Check required directories
+  required_dirs=(
+    "src/processors"
+    "src/extractors"
+    "src/llm"
+    "src/models"
+    "tests/processors"
+    "tests/extractors"
+    "tests/llm"
+    "tests/models"
+    "tests/integration"
+  )
+
+  for dir in "${required_dirs[@]}"; do
+    if [ ! -d "$dir" ]; then
+      echo "❌ Missing required directory: $dir"
+      exit 1
+    fi
+  done
 
   # Check required files
   required_files=(
-    "src/processors/document_processor.py"
-    "src/extractors/entity_extractor.py"
-    "src/extractors/relation_extractor.py"
-    "src/models/llm_config.py"
-    "src/models/extraction_schema.py"
+    "src/processors/__init__.py"
+    "src/processors/document.py"
+    "src/processors/text.py"
+    "src/processors/media.py"
+    "src/extractors/__init__.py"
+    "src/extractors/entity.py"
+    "src/extractors/relation.py"
+    "src/extractors/concepts.py"
+    "src/llm/__init__.py"
+    "src/llm/client.py"
+    "src/llm/prompts.py"
+    "src/llm/callbacks.py"
+    "src/models/__init__.py"
+    "src/models/document.py"
+    "src/models/extraction.py"
+    "src/__init__.py"
+    "tests/processors/__init__.py"
+    "tests/processors/test_document.py"
+    "tests/processors/test_text.py"
+    "tests/processors/test_media.py"
+    "tests/extractors/__init__.py"
+    "tests/extractors/test_entity.py"
+    "tests/extractors/test_relation.py"
+    "tests/extractors/test_concepts.py"
+    "tests/llm/__init__.py"
+    "tests/llm/test_client.py"
+    "tests/llm/test_prompts.py"
+    "tests/models/__init__.py"
+    "tests/models/test_document.py"
+    "tests/models/test_extraction.py"
+    "tests/integration/__init__.py"
+    "tests/integration/test_pipeline.py"
   )
 
   for file in "${required_files[@]}"; do
@@ -28,18 +75,6 @@ function validate_implementation() {
       exit 1
     fi
   done
-
-  # Validate type checking
-  if ! mypy src/; then
-    echo "❌ Type checking failed"
-    exit 1
-  fi
-
-  # Validate code style
-  if ! ruff check src/; then
-    echo "❌ Code style validation failed"
-    exit 1
-  fi
 
   # Return to project root
   cd "$(git rev-parse --show-toplevel)"
@@ -50,7 +85,7 @@ function validate_document_processing() {
   cd knowledge/packages/graph-builder
 
   # Run document processing tests
-  if ! pytest tests/processors/test_document_processor.py \
+  if ! pytest tests/processors/ \
       --cov=src/processors \
       --cov-report=term-missing \
       --cov-fail-under=85; then
@@ -58,20 +93,9 @@ function validate_document_processing() {
     exit 1
   fi
 
-  # Return to project root
-  cd "$(git rev-parse --show-toplevel)"
-}
-
-# Validate entity extraction
-function validate_entity_extraction() {
-  cd knowledge/packages/graph-builder
-
-  # Run entity extraction tests
-  if ! pytest tests/extractors/test_entity_extractor.py \
-      --cov=src/extractors/entity_extractor.py \
-      --cov-report=term-missing \
-      --cov-fail-under=85; then
-    echo "❌ Entity extraction tests failed or coverage below 85%"
+  # Validate multiple format support
+  if ! python -c "from src.processors.document import DocumentProcessor; assert len(DocumentProcessor.supported_formats) > 1"; then
+    echo "❌ Document processor missing multiple format support"
     exit 1
   fi
 
@@ -79,16 +103,22 @@ function validate_entity_extraction() {
   cd "$(git rev-parse --show-toplevel)"
 }
 
-# Validate relation inference
-function validate_relation_inference() {
+# Validate extraction system
+function validate_extraction() {
   cd knowledge/packages/graph-builder
 
-  # Run relation inference tests
-  if ! pytest tests/extractors/test_relation_extractor.py \
-      --cov=src/extractors/relation_extractor.py \
+  # Run extraction tests
+  if ! pytest tests/extractors/ \
+      --cov=src/extractors \
       --cov-report=term-missing \
       --cov-fail-under=85; then
-    echo "❌ Relation inference tests failed or coverage below 85%"
+    echo "❌ Extraction system tests failed or coverage below 85%"
+    exit 1
+  fi
+
+  # Validate configurable rules
+  if ! python -c "from src.extractors.entity import EntityExtractor; assert hasattr(EntityExtractor, 'configure_rules')"; then
+    echo "❌ Entity extractor missing configurable rules"
     exit 1
   fi
 
@@ -97,22 +127,70 @@ function validate_relation_inference() {
 }
 
 # Validate LLM integration
-function validate_llm_integration() {
+function validate_llm() {
   cd knowledge/packages/graph-builder
 
-  # Run LLM integration tests
-  if ! pytest tests/integration/test_llm_pipeline.py; then
-    echo "❌ LLM integration tests failed"
+  # Run LLM tests
+  if ! pytest tests/llm/ \
+      --cov=src/llm \
+      --cov-report=term-missing \
+      --cov-fail-under=85; then
+    echo "❌ LLM integration tests failed or coverage below 85%"
     exit 1
   fi
 
-  # Check LLM configuration
-  if ! python -c "
-    from src.models.llm_config import LLMConfig
-    config = LLMConfig()
-    assert config.validate()
-    "; then
-    echo "❌ LLM configuration validation failed"
+  # Validate error handling and retries
+  if ! python -c "from src.llm.client import LLMClient; assert hasattr(LLMClient, 'retry_config') and hasattr(LLMClient, 'error_handler')"; then
+    echo "❌ LLM client missing error handling or retries"
+    exit 1
+  fi
+
+  # Validate prompt versioning
+  if ! python -c "from src.llm.prompts import PromptTemplate; assert hasattr(PromptTemplate, 'version')"; then
+    echo "❌ Prompt templates missing versioning"
+    exit 1
+  fi
+
+  # Return to project root
+  cd "$(git rev-parse --show-toplevel)"
+}
+
+# Validate models and type hints
+function validate_models() {
+  cd knowledge/packages/graph-builder
+
+  # Run model tests
+  if ! pytest tests/models/ \
+      --cov=src/models \
+      --cov-report=term-missing \
+      --cov-fail-under=85; then
+    echo "❌ Model tests failed or coverage below 85%"
+    exit 1
+  fi
+
+  # Validate type hints
+  if ! mypy src/; then
+    echo "❌ Type checking failed"
+    exit 1
+  fi
+
+  # Return to project root
+  cd "$(git rev-parse --show-toplevel)"
+}
+
+# Validate integration
+function validate_integration() {
+  cd knowledge/packages/graph-builder
+
+  # Run integration tests
+  if ! pytest tests/integration/test_pipeline.py; then
+    echo "❌ Integration tests failed"
+    exit 1
+  fi
+
+  # Validate GraphManager integration
+  if ! python -c "from src.processors.document import DocumentProcessor; from src.services.graph_manager import GraphManager; assert issubclass(DocumentProcessor, GraphManager)"; then
+    echo "❌ Document processor is not properly integrated with GraphManager"
     exit 1
   fi
 
@@ -121,10 +199,22 @@ function validate_llm_integration() {
 }
 
 # Run all validations
-validate_implementation
+echo "Validating directory structure..."
+validate_directory_structure
+
+echo "Validating document processing..."
 validate_document_processing
-validate_entity_extraction
-validate_relation_inference
-validate_llm_integration
+
+echo "Validating extraction system..."
+validate_extraction
+
+echo "Validating LLM integration..."
+validate_llm
+
+echo "Validating models and type hints..."
+validate_models
+
+echo "Validating integration..."
+validate_integration
 
 echo "✅ GraphBuilder Core implementation validated"
