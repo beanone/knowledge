@@ -99,12 +99,34 @@
    - Create schema validation system
    - Implement property validation
    - Set up reference checking
+   - Required Structure:
+     ```
+     graph-core/
+     ├── src/
+     │   ├── types/
+     │   │   ├── __init__.py
+     │   │   ├── schema.py        # Schema definition and validation
+     │   │   ├── properties.py    # Property validation system
+     │   │   ├── references.py    # Reference checking logic
+     │   │   └── exceptions.py    # Type-specific exceptions
+     │   └── __init__.py
+     └── tests/
+         └── types/
+             ├── __init__.py
+             ├── test_schema.py
+             ├── test_properties.py
+             └── test_references.py
+     ```
    - Dependencies: 2
    **Acceptance Criteria:**
-   - Complete implementation of type system components
-   - Schema validation functionality
-   - 95% test coverage for type system
-   - Full compliance with development rules
+   - Directory structure matches the required layout
+   - Complete implementation of schema validation system in `schema.py`
+   - Property validation system implemented in `properties.py`
+   - Reference checking logic implemented in `references.py`
+   - Custom type exceptions defined in `exceptions.py`
+   - 95% test coverage for type system package
+   - Full type annotation coverage
+   - Compliance with development rules
 
    **Validation:**
    ```bash
