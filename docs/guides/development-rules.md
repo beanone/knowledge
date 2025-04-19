@@ -1,14 +1,4 @@
 ---
-description: Guides to the feature implementation and refactoring process
-globs:
-alwaysApply: true
----
----
-description: Guides to the feature implementation and refactoring process
-globs:
-alwaysApply: false
----
----
 description: Guides the development process and implementation standards for the Knowledge Graph IDE
 globs:
   - "knowledge/packages/*/src/**/*.py"
