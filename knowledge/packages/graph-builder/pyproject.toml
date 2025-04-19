@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "graph-builder"
+version = "0.1.0"
+description = "LLM-based knowledge extraction for Knowledge Graph IDE"
+authors = ["Your Name <your.email@example.com>"]
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.6"
+graph-core = { path = "../graph-core", develop = true }
+graph-service = { path = "../graph-service", develop = true }
+langchain = "^0.1"
+transformers = "^4.38"
+torch = "^2.2"
+spacy = "^3.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+pytest-cov = "^4.1"
+pytest-asyncio = "^0.23"
+ruff = "^0.11"
+mypy = "^1.7"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I", "N", "W", "B", "PL"]
+ignore = []
+
+[tool.ruff.isort]
+known-first-party = ["graph_builder", "graph_service", "graph_core"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
