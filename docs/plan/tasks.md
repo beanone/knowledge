@@ -2,6 +2,7 @@
 
 ## Core Infrastructure (Phase 1)
 1. Set up project structure and development environment
+   - feature: task1-setup-project-structure
    - Initialize monorepo structure
    - Configure Poetry/dependency management
    - Set up linting (Ruff) and testing (pytest)
